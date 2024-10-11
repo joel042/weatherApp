@@ -27,12 +27,20 @@ function Weather() {
   
 
   const search = async (city) => {
+    if(city === "" ){
+      alert("City name is required");
+      return;
+    }
     try {
       // const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${import.meta.env.VITE_APP_ID}`;
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=8110dde7156d3e9c762005c826f96d76`;
 
       const response = await fetch(url);
       const data = await response.json();
+      if (!response.ok){
+        alert("Please check if the country spelling is correct");
+        return;
+      }
       console.log(url, data);
       const icon = allIcons[data.weather[0].icon];
       setWeatherData({
@@ -45,7 +53,7 @@ function Weather() {
         icon: icon,
       });
     } catch (error) {
-      console.error(error);
+      setWeatherData(false, error);
     }
   };
 
@@ -64,6 +72,7 @@ function Weather() {
             type="text"
             placeholder="Enter any Country Name"
           />
+
           <button
             className=" text-white bg-red-500 w-[100px] h-[40px] font-bold rounded-[50px] cursor-pointer"
             src="https://img.icons8.com/?size=100&id=97574&format=png&color=000000"
@@ -77,48 +86,40 @@ function Weather() {
           >
             Search
           </button>
-          {/* <img
-            className=" w-[10px]  font-bold py-2 px-4  rounded-[50px] cursor-pointer"
-            src="https://img.icons8.com/?size=100&id=97574&format=png&color=000000"
-            alt="search"
-            onClick={() => {
-              const value = inputRef.current.value;
-              console.log(inputRef);
-
-              search(value);
-            }}
-          /> */}
         </div>
-
-        <img className="w-[150px] mt-10" src={weatherData.icon} alt="" />
-        <p className="text-gray-700 text-[80px] leading-1">
-          {weatherData.Temperature}°C
-        </p>
-        <p className="text-gray-700 text-[40px]">{weatherData.location}</p>
-        <div className="weather-data w-[100%] flex text-white mt-[40px] justify-between">
-          <div className="col  flex gap-[12px] ">
-            <div className="">
-              {/* image  */}
-              <p className="text-gray-700 text-[50px]">
-                {weatherData.humidity}
-                <span className="flex flex-col text-[2vw] sm:text-[2vw] md:text-[2vw] lg:text-[2vw] 2xl:text-[1vw] ">
-                  Humidity
-                </span>
-              </p>
+        {weatherData ? (
+          <>
+            <img className="w-[150px] mt-10" src={weatherData.icon} alt="" />
+            <p className="text-gray-700 text-[80px] leading-1">
+              {weatherData.Temperature}°C
+            </p>
+            <p className="text-gray-700 text-[40px]">{weatherData.location}</p>
+            <div className="weather-data w-[100%] flex text-white mt-[40px] justify-between">
+              <div className="col  flex gap-[12px] ">
+                <div className="">
+                  {/* image  */}
+                  <p className="text-gray-700 text-[50px]">
+                    {weatherData.humidity}
+                    <span className="flex flex-col text-[2vw] sm:text-[2vw] md:text-[2vw] lg:text-[2vw] 2xl:text-[1vw] ">
+                      Humidity
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className="col">
+                {/* image */}
+                <div>
+                  <p className="text-gray-700 text-end text-[50px]">
+                    {weatherData.windspeed}
+                    <span className="flex flex-col text-[2vw] sm:text-[2vw] md:text-[2vw] lg:text-[2vw] 2xl:text-[1vw]">
+                      WindSpeed( km/h)
+                    </span>
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col">
-            {/* image */}
-            <div>
-              <p className="text-gray-700 text-end text-[50px]">
-                {weatherData.windspeed}
-                <span className="flex flex-col text-[2vw] sm:text-[2vw] md:text-[2vw] lg:text-[2vw] 2xl:text-[1vw]">
-                  WindSpeed( km/h)
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
+          </>
+        ) : null}
         <div className="text-sm mt-10 text-gray-400">
           {" "}
           <p>&copy; {year} made with love by Uchenna joel Eze</p>
